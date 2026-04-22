@@ -38,7 +38,29 @@ async function startBot() {
   })
 
   // COMANDO
-  sock.ev.on("messages.upsert", async ({ messages }) => {
+  ssock.ev.on("messages.upsert", async ({ messages }) => {
+  const msg = messages[0]
+  if (!msg.message) return
+
+  // 🚫 só responde em GRUPO
+  if (!msg.key.remoteJid.endsWith("@g.us")) return
+
+  const msgType = Object.keys(msg.message)[0]
+
+  const text =
+    msg.message.conversation ||
+    msg.message.extendedTextMessage?.text ||
+    msg.message[msgType]?.text ||
+    ""
+
+  // comando /ping
+  if (text === "/ping") {
+    await sock.sendMessage(msg.key.remoteJid, {
+      text: "pong 🏓"
+    })
+  }
+})
+
     const msg = messages[0]
     if (!msg.message) return
 
